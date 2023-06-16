@@ -7,6 +7,7 @@
 
 # shows the board and keeps track of players marking
 class Board
+  # Initialize by creating a board
   def initialize
     create_board
   end
@@ -25,13 +26,20 @@ class Board
   end
 
   # change the board based on player
-  def mark_board(position, character)
+  def mark_board(position, player)
     # find the position or return nil
     index = @board.index(position)
     # check if the position has been taken
     if index
-      @board[index] = character
-      show_board
+      @board[index] = player.mark
+      if won?
+        p "Congratulations Player #{player.mark} has won!"
+        show_board
+      else
+        player.change_turn
+        p "Next Player"
+        show_board
+      end
     else
       p "This spot is not avaliable. Choose again."
       show_board
@@ -50,8 +58,10 @@ class Board
     end
   end
 
+  # This might be able to be a constant
   def win_condition
-    win_conditions = [] << [@board[0], @board[1], @board[2]]
+    win_conditions = [] 
+    win_conditions << [@board[0], @board[1], @board[2]]
     win_conditions << [@board[3], @board[4], @board[5]]
     win_conditions << [@board[6], @board[7], @board[8]]
     win_conditions << [@board[0], @board[3], @board[6]]
@@ -65,8 +75,9 @@ class Board
 end
 
 class Player
+  # initialize player with x or o
   def initialize(x_or_o)
-    if x_or_o == "x"
+    if x_or_o == "X"
       @mark = "X"
       @turn = true
     else
@@ -75,20 +86,19 @@ class Player
     end
   end
 
+  # Shows the mark of the player
   def mark
     @mark
   end
 
+  # Returns true or false depending on whose turn
   def turn
     @turn
   end
 
+  # Change the turn
   def change_turn
     !@turn
-  end
-
-
-  def play(position)
   end
 end
 
@@ -96,18 +106,20 @@ def play_game
   # generate the board and initialize player 1 and 2
   board = Board.new
   board.show_board
-  player_1 = Player.new("x")
-  player_2 = Player.new("o")
+  player_1 = Player.new("X")
+  player_2 = Player.new("O")
 
   # continue game until won
 end
 
 board = Board.new
   board.show_board
-  player_1 = Player.new("x")
-  player_2 = Player.new("o")
-  board.mark_board(1, "x")
-  board.mark_board(5, "x")
-  board.mark_board(6, "x")
-  board.mark_board(9, "x")
+  player_1 = Player.new("X")
+  player_2 = Player.new("O")
+  board.mark_board(1, player_1)
+  board.mark_board(5, player_1)
+  board.mark_board(6, player_1)
+  board.mark_board(6, player_1)
+  board.mark_board(1, player_1)
+  board.mark_board(4, player_2)
   p board.won?
